@@ -1,14 +1,12 @@
-#Code developed by Jose Manuel Deltoro Berrio
+# Code developed by Jose Manuel Deltoro Berrio
+# University of Valencia - Escuela Técnica Superior d'Enginyeria (ETSE)
+# Python Version: 3.9.6
+# Tensorflow Version: 2.6.0
+# Tensorflow Keras Version: 2.6.0
+
 #%%
 from __future__ import absolute_import, division, print_function
 
-import pathlib
-
-import os
-
-# manually specify the GPUs to use
-#os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
-#os.environ["CUDA_VISIBLE_DEVICES"]="0"
 from sklearn.preprocessing import normalize, MinMaxScaler
 
 import matplotlib as m
@@ -44,10 +42,12 @@ mpl.rcParams.update(mpl.rcParamsDefault)
 
 from matplotlib import colors
 import matplotlib
-#matplotlib.use('Agg') #comment for jupiter plotting
-
-#TURBO CHARGE YOUR PYTHON -- Make it parallel
 import multiprocessing
+
+
+from keras_flops import get_flops
+from IPython.display import Image 
+from keras.models import load_model
 
 
 weights_peak = np.full(52, 0.3)
@@ -57,15 +57,10 @@ weights_tail = np.full(180, 1)
 weights = np.concatenate((weights_peak, weights_tail))
 weights = weights**1
 
-#print (weights)
-#plt.plot(weights)
-#plt.show()
 
 print (weights.shape)
 
 
-
-#print(weights1)
 
 #%%
 def convolve(signal, filterProfile): 
@@ -90,12 +85,6 @@ def customLoss1(yTrue, yPred):
     weights11 = K.constant(weights[0:40])
     return K.mean(K.square(yTrue - yPred) * weights11)
 
-
-#def load_spectral_profiles(directory,filename):
-#    hdul     = fits.open(directory+filename)
-#    spectrum = hdul[0].data
-#    print(hdul.header)
-#    return spectrum 
 #%%
 def build_simple_model1():
   #build the NN needed for the problem accomodating a single
@@ -283,70 +272,9 @@ def cutting(df_final_con):
 
 
 
-
-
-
-#data = pd.read_hdf('/nfs/neutron-ml/test2.h5')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch0_merged_3M_events.pickle')
-
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch1_merged_3M_events.pickle')
-
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch1_merged_3M_events_2nd_signal_delayed.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch2_merged_4M_events.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch0_merged_9Mevents_2nd_delayed.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch0_merged_2206280events_12delays.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch1_merged_3472224events_12delays.pickle')
-
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch2_merged_7741336events_12delays.pickle')
-
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch3_merged_9528632events_12delays.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch4_merged_19521616events_12delays.pickle')
-
-
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch5_merged_2052848events_12delays.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch6_merged_10813888events_12delays.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch7_merged_16863496events_12delays.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch0_merged_1983168events_12delays_addingfrompeaks.pickle')
-#data = pd.read_pickle('/nfs/neutron-ml/test_ch1_merged_1995736events_12delays_addingfrompeaks.pickle')
-#data1 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_n_g.pickle')
-#data2 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_g_g.pickle')
-#data3 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_n_n.pickle')
-#data4 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_g_n.pickle')
-
-#data1 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_n_g_2nd_dataset_CD.pickle')
-#data2 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_g_g_2nd_dataset_CD.pickle')
-#data3 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_n_n_2nd_dataset_CD.pickle')
-#data4 = pd.read_pickle('/eos/home-m/mlphd/test_merged_to_train_events_6to39delays_noNUMEXO_g_n_2nd_dataset_CD.pickle')
-#data_path = '/home/mlphd/pile-up-neda/data/training_data/'
+#Data for training  --------   gamma-neutron and neutron-gamma
 data_path = "C:/Users/jmdeltoro/data_pile-up/"
-#data1 = pd.read_pickle(data_path + 'Merged_events_to_train_events_3to39delays_noNUMEXO_n_n_1st_dataset_nb.pickle')
-#data2 = pd.read_pickle(data_path + 'Merged_events_to_train_events_3to39delays_noNUMEXO_n_g_1st_dataset_nb.pickle')
-#data3 = pd.read_pickle(data_path + 'Merged_events_to_train_events_3to39delays_noNUMEXO_g_n_1st_dataset_nb.pickle')
-#data4 = pd.read_pickle(data_path + 'Merged_events_to_train_events_3to39delays_noNUMEXO_g_g_1st_dataset_nb.pickle')
-'''
-data1 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_n_n_1st_dataset_nb.pickle')
-data2 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_n_g_1st_dataset_nb.pickle')
-data3 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_g_n_1st_dataset_nb.pickle')
-data4 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_g_g_1st_dataset_nb.pickle')
-data5 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_n_n_2nd_dataset_nb.pickle')
-data6 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_n_g_2nd_dataset_nb.pickle')
-data7 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_g_n_2nd_dataset_nb.pickle')
-data8 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_g_g_2nd_dataset_nb.pickle')
-data9 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_n_n_5th_dataset_nb.pickle')
-data10 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_n_g_5th_dataset_nb.pickle')
-data11 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_g_n_5th_dataset_nb.pickle')
-data12 = pd.read_pickle(data_path + 'Merged_events_to_train_events_alldelays_noNUMEXO_g_g_5th_dataset_nb.pickle')
 
-
-df_orig = pd.concat([data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12], ignore_index=1)
-'''
-'''
-#path = (data_path  + 'Merged_events_to_train_events_3to10delays_noNUMEXO_g_n1st_2nd_dataset_nb_OK_train_READY.pickle')
-#data1 = pd.read_pickle(path)
-path = (data_path  + 'Merged_events_to_train_events_3to10delays_noNUMEXO_g_n1st_2nd_dataset_nb_OK_train_READY.hdf')
-data1 = pd.read_hdf(path)
-'''
-##---  G-N
 path = (data_path  + 'result_PSA_orig/marcin/all_delays/g_n/df_gn_alldelays.pickle')
 data1 = pd.read_pickle(path)
 
@@ -354,38 +282,15 @@ path = (data_path  + 'result_PSA_orig/marcin/all_delays/n_g/df_ng_alldelays.pick
 data2 = pd.read_pickle(path)
 
 
-
-
-
-
-
-
 #%%
-
+# Unión de datasets y desorden de señales
 
 df_train = pd.concat([data1, data2])
-
-
-#limit = 0.575
-#df_trainn = df_train.loc[df_train.loc[:, 'Slow/Fast_orig1'] > limit]
-#df_trainn = df_trainn.reset_index(drop=True)
-#df_trainn = cutting(df_trainn)
-
-
-#df_traing = df_train.loc[df_train.loc[:, 'Slow/Fast_orig1'] < limit]
-#df_traing = df_traing.reset_index(drop=True)
-#df_traing = cutting(df_traing)
-
-#%%
-#df_train = cutting(df_train)
-#df_train = pd.concat([df_trainn, df_traing])
-print (df_train)
 data = df_train.sample(frac=1).reset_index(drop=True)
-
-
 data.info(verbose=True)
 print(data)
 
+### Formateo de datos para utilizarlos para el entrenamiento de la red
 trace1=np.array([x for x in data['Trace1']]).reshape(-1,232,1).astype('float32')
 trace2=np.array([x for x in data['Trace2']]).reshape(-1,232,1).astype('float32')
 traceFinal=np.array([x for x in data['TraceFinal']]).reshape(-1,232,1).astype('float32')
@@ -394,12 +299,11 @@ traceFinal=np.array([x for x in data['TraceFinal']]).reshape(-1,232,1).astype('f
 
 
 #%%
-# train, validation, test
+# Separación de train, validation
 train = 0.7
-val = 0.2
-test = 1-train-val
+val = 0.3
 
-assert train+val+test==1.0
+assert train+val==1.0
 
 trace1_train = trace1[:int(len(trace1)*train)]
 trace1_val = trace1[int(len(trace1)*train):int(len(trace1)*train)+int(len(trace1)*val)]
@@ -409,14 +313,8 @@ trace2_train = trace2[:int(len(trace2)*train)]
 trace2_val = trace2[int(len(trace2)*train):int(len(trace2)*train)+int(len(trace2)*val)]
 trace2_test = trace2[int(len(trace2)*train)+int(len(trace2)*val):]
 
-traceFinal_train = traceFinal[:int(len(traceFinal)*train)]
-traceFinal_val = traceFinal[int(len(traceFinal)*train):int(len(traceFinal)*train)+int(len(traceFinal)*val)]
-traceFinal_test = traceFinal[int(len(traceFinal)*train)+int(len(traceFinal)*val):]
-
 #%%
-from keras_flops import get_flops
-from IPython.display import Image 
-from keras.models import load_model
+
 
 
 data_path = "C:/Users/jmdeltoro/data_pile-up/train_data/"
