@@ -49,39 +49,30 @@ def build_conv_model2_2out():
     kSzConv1D = 3
     waveNumd  = 232
     y1 = layers.Input(shape=[waveNumd,1])
-    y = layers.Conv1D(5, (kSzConv1D, ), activation='relu')(y1) #leackyrelu??  poner mas canales??? mas conexxiones???
+    y = layers.Conv1D(5, (kSzConv1D, ), activation='relu')(y1) 
     y = layers.MaxPooling1D(2)(y)
     y = layers.Conv1D(10, (kSzConv1D, ), activation='relu')(y)
     y = layers.MaxPooling1D(2)(y)
     y = layers.Conv1D(20, (kSzConv1D, ), activation='relu')(y)
     y_div = layers.MaxPooling1D(2)(y)
-    #y = layers.Dense(100,activation='relu')(y)
+
     y = layers.UpSampling1D()(y_div)
     y = layers.Conv1D(20, (kSzConv1D, ), activation='relu')(y)
-    #y = layers.Dropout(0.2)(y)
     y = layers.UpSampling1D()(y)
     y = layers.Conv1D(10, (kSzConv1D, ), activation='relu')(y)
     y = layers.UpSampling1D()(y)
     y = layers.Conv1D(5, (kSzConv1D, ), activation='relu')(y)
-    #layers.GlobalAveragePooling1D(),
-    #y = layers.Flatten()(y)
-    #y = layers.Dropout(0.5)(y)
     y = layers.Flatten()(y)
     y = layers.Dense(waveNumd, activation=tf.nn.relu)(y)
     y2 = layers.Add()([y, y1[:,  :, 0]])
     y = layers.Dense(waveNumd, activation=tf.nn.relu)(y2)
 
-
     z = layers.UpSampling1D()(y_div)
     z = layers.Conv1D(20, (kSzConv1D, ), activation='relu')(z)
-    #y = layers.Dropout(0.2)(y)
     z = layers.UpSampling1D()(z)
     z = layers.Conv1D(10, (kSzConv1D, ), activation='relu')(z)
     z = layers.UpSampling1D()(z)
     z = layers.Conv1D(5, (kSzConv1D, ), activation='relu')(z)
-    #layers.GlobalAveragePooling1D(),
-    #y = layers.Flatten()(y)
-    #y = layers.Dropout(0.5)(y)
     z = layers.Flatten()(z)
     z = layers.Dense(waveNumd, activation=tf.nn.relu)(z)
     z2 = layers.Add()([z, y1[:,  :, 0]])
