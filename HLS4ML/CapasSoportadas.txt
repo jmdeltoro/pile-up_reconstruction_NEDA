@@ -1,0 +1,39 @@
+['Sequential', 'Functional', 'FixedPointQuantizer', 'HGQ>FixedPointQuantizer', 'UnaryLUT', 'HGQ>UnaryLUT', 'SimpleRNN', 'LSTM', 
+'GRU', 'MaxPooling1D', 'MaxPooling2D', 'AveragePooling1D', 'AveragePooling2D', 'GlobalMaxPooling1D', 'GlobalMaxPooling2D', 
+'GlobalAveragePooling1D', 'GlobalAveragePooling2D', 'GarNet', 'GarNetStack', 'ZeroPadding1D', 'ZeroPadding2D', 'Flatten', 
+'Reshape', 'UpSampling1D', 'UpSampling2D', 'Permute', 'Add', 'Subtract', 'Multiply', 'Average', 'Maximum', 'Minimum', 'Concatenate', 
+'Dot', 'QDense', 'QConv1D', 'QConv2D', 'QDepthwiseConv2D', 'QSeparableConv1D', 'QSeparableConv2D', 'QSimpleRNN', 'QLSTM', 'QGRU', 
+'QActivation', 'QBatchNormalization', 'QConv2DBatchnorm', 'Conv1D', 'SeparableConv1D', 'DepthwiseConv1D', 'Conv2D', 'SeparableConv2D', 
+'DepthwiseConv2D', 'InputLayer', 'Dense', 'BinaryDense', 'TernaryDense', 'Activation', 'LeakyReLU', 'ThresholdedReLU', 'ELU', 'PReLU', 
+'Softmax', 'ReLU', 'BatchNormalization', 'Embedding']
+
+
+Nombre: input_1
+Nombre: conv1d
+Nombre: max_pooling1d
+Nombre: conv1d_1
+Nombre: max_pooling1d_1
+Nombre: conv1d_2
+Nombre: max_pooling1d_2
+Nombre: up_sampling1d
+Nombre: up_sampling1d_3
+Nombre: conv1d_3
+Nombre: conv1d_6
+Nombre: up_sampling1d_1
+Nombre: up_sampling1d_4
+Nombre: conv1d_4
+Nombre: conv1d_7
+Nombre: up_sampling1d_2
+Nombre: up_sampling1d_5
+Nombre: conv1d_5
+Nombre: conv1d_8
+Nombre: flatten
+Nombre: flatten_1
+Nombre: dense
+Nombre: reshape
+Nombre: dense_2
+Nombre: reshape_1
+Nombre: add
+Nombre: add_1
+Nombre: out1
+Nombre: out2
