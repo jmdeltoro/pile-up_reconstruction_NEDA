@@ -8,7 +8,7 @@ co = {}
 _add_supported_quantized_objects(co)
 import os
 
-saved_model_dir = "/home/rmart/NEDA/pile-up_reconstruction_NEDA/modelo_10000_epochs_new_structure_modification"
+saved_model_dir = "pile-up_reconstruction_NEDA/HLS4ML/Modelos/modelo_400_epochs_fast_rtl"
 
 
 #%% Modelo ejemplo
@@ -23,13 +23,13 @@ model = load_model('/home/rmart/NEDA/pile-up_reconstruction_NEDA/modelo_700_epoc
 
 #%% Modelo 3ª iteración, cambiado con flatten
 # conversion a h.5
-saved_model_dir = "/home/rmart/NEDA/modelo_400_epochs_fast_rtl/modelo_400_epochs_fast_rtl"
+#saved_model_dir = "/home/rmart/NEDA/modelo_400_epochs_fast_rtl/modelo_400_epochs_fast_rtl"
 
 # Cargar el modelo con TensorFlow Keras
-model = tf.keras.models.load_model(saved_model_dir, compile=True)
+#model = tf.keras.models.load_model(saved_model_dir, compile=True)
 
 #%% Guardarlo en formato .h5
-model.save(os.path.join(saved_model_dir, 'model.h5'), save_format="h5")
+#model.save(os.path.join(saved_model_dir, 'model.h5'), save_format="h5")
 
 #%% Cargar el modelo guardado
 model = load_model(os.path.join(saved_model_dir, 'model.h5'))
@@ -50,6 +50,9 @@ config['Model']['Strategy'] = 'Resource'
 config['Model']['BramFactor'] = 1000000000
 
 config['ClockPeriod'] = 10
+
+config['LayerName']['conv1d_7']['Strategy'] = 'Latency'
+config['LayerName']['conv1d_7']['Strategy'] = 'out1'
 
 #%%
 hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
