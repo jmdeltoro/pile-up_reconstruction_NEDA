@@ -55,12 +55,16 @@ config['LayerName']['conv1d_7']['Strategy'] = 'Latency'
 config['LayerName']['conv1d_7']['Strategy'] = 'out1'
 
 #%%
+
+
+#%%
 hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
                                                        hls_config=config,
                                                        output_dir='hls4ml_test_fastrtl',
                                                        backend='Vivado',
                                                        part='xczu7ev-ffvc1156-2-e',
                                                        io_type='io_stream',
+                                                       input_data_tb='pile-up_reconstruction_NEDA/HLS4ML/CSIM_data/input_trace.dat',
                                                        )
 
 
