@@ -8,7 +8,7 @@ co = {}
 _add_supported_quantized_objects(co)
 import os
 
-saved_model_dir = "/home/rmart/NEDA/pile-up_reconstruction_NEDA/modelo_10000_epochs_new_structure_modification"
+#saved_model_dir = "/home/rmart/NEDA/pile-up_reconstruction_NEDA/modelo/modelo_10000_epochs_new_structure_modification"
 
 
 #%% Modelo ejemplo
@@ -21,7 +21,7 @@ loaded_model.load_weights('/home/rmart/pile-up_reconstruction_NEDA/KERAS_dense_1
 #%%Modelo 2ª iteración
 model = load_model('/home/rmart/NEDA/pile-up_reconstruction_NEDA/modelo_700_epochs_new_structure/model.h5')'''
 
-#%% Modelo 3ª iteración, cambiado con flatten
+'''#%% Modelo 3ª iteración, cambiado con flatten
 # conversion a h.5
 saved_model_dir = "/home/rmart/NEDA/modelo_400_epochs_fast_rtl/modelo_400_epochs_fast_rtl"
 
@@ -29,10 +29,10 @@ saved_model_dir = "/home/rmart/NEDA/modelo_400_epochs_fast_rtl/modelo_400_epochs
 model = tf.keras.models.load_model(saved_model_dir, compile=True)
 
 #%% Guardarlo en formato .h5
-model.save(os.path.join(saved_model_dir, 'model.h5'), save_format="h5")
+model.save(os.path.join(saved_model_dir, 'model.h5'), save_format="h5")'''
 
 #%% Cargar el modelo guardado
-model = load_model(os.path.join(saved_model_dir, 'model.h5'))
+model = load_model(os.path.join(r"C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Modelos\modelo_400_epochs_fast_rtl", 'model.h5'))
 
 #%% cambio el modelo para que tenga una sola salida
 from tensorflow.keras.models import Model
@@ -62,10 +62,10 @@ hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
 
 
 #%%+
-hls_model.compile()
+#hls_model.compile()
 # Visualizar el modelo
-#hls4ml.utils.plot_model(hls_model, show_shapes=True, show_precision=True, to_file='modelo_fastrtl.png')
-
+hls4ml.utils.plot_model(hls_model, show_shapes=True, show_precision=True, to_file='modelo_fastrtl_hls4ml.png')
+input("Press Enter to continue...")
 #%%
 os.environ['PATH'] = os.environ['XILINX_VIVADO'] + '/bin:' + os.environ['PATH']
 hls_model.write()  
