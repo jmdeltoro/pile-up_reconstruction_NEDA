@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 #%% Cargar el modelo guardado
-model = load_model(os.path.join(r"C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Modelos\modelo_400_epochs_fast_rtl", 'model.h5'))
+model = load_model(os.path.join('pile-up_reconstruction_NEDA/HLS4ML/Modelos/modelo_400_epochs_fast_rtl', 'model.h5'))
 
 from tensorflow.keras.models import Model
 modelo1out = Model(inputs=model.input, outputs=model.output[0])
@@ -20,12 +20,12 @@ config['Model']['BramFactor'] = 1000000000
 
 config['ClockPeriod'] = 10
 
-config['LayerName']['conv1d_7']['Strategy'] = 'Latency'
-config['LayerName']['out1']['Strategy'] = 'Latency'
+config['LayerName']['conv1d_7']['Strategy'] = 'Latency' #para la salidda 2 es conv1d_12
+config['LayerName']['out1']['Strategy'] = 'Latency'  #para la salida 2 es out2
 
 hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
                                                        hls_config=config,
-                                                       output_dir='hls4ml_test_fastrtl',
+                                                       output_dir='hls4ml_test_fastrtl_predicciones',
                                                        backend='Vivado',
                                                        part='xczu7ev-ffvc1156-2-e',
                                                        io_type='io_stream',
@@ -34,13 +34,16 @@ hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
 hls_model.compile()
 
 # Cargar el dataset en formato pickle
-data_path = r"C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Resultados\reconsturccion_g-n_PC.pkl"
+data_path = "pile-up_reconstruction_NEDA/HLS4ML/Datasets/dataset_test_200eventos_g-n.pkl"
 data = pd.read_pickle(data_path)
 
 # Extraer una traza (por ejemplo, la columna 'TraceFinal' de la primera fila)
 # Ajusta el nombre de la columna y el índice según tus necesidades
-X_test = np.array([data.TraceFinal[0]])
+all_preds = []
+for idx, trace in enumerate(data.TraceFinal):
+    X_test = np.array([trace])
+    y_hls = hls_model.predict(np.ascontiguousarray(X_test.astype(float)))
+    all_preds.append(y_hls)
 
-y_hls = hls_model.predict(np.ascontiguousarray(X_test))
-
-print(y_hls)
+all_preds = np.array(all_preds)
+np.save('pile-up_reconstruction_NEDA/HLS4ML/Resultados/hls4ml/predicciones_hls4mlout1_n-g.npy', all_preds)
