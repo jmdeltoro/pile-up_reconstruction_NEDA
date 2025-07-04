@@ -51,6 +51,9 @@ config['Model']['BramFactor'] = 1000000000
 
 config['ClockPeriod'] = 10
 
+config['Layername']['conv1d_7']['Strategy'] = 'Latency'
+config['Layername']['out_1']['Strategy'] = 'Latency'
+
 #%%
 hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
                                                        hls_config=config,
