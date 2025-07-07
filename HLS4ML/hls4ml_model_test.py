@@ -83,7 +83,7 @@ for i in (906, 909, 972):
     y_hls = hls_model.predict(current_trace.astype(float))
     results.at[i, 'KERAS'] = y_keras
     results.at[i, 'HLS4ML'] = y_hls
-
+'''
     plt.rcParams.update({'font.size': 12, 'font.family': 'DejaVu Sans'})  # Tipografía legible
 
     fig, axs = plt.subplots(2, 1, figsize=(12, 8), sharex=False, dpi=200)
@@ -101,7 +101,13 @@ for i in (906, 909, 972):
     axs[0].grid(True, linestyle=':', alpha=0.7)
 
     plt.show()
+'''
 
+mse_keras1 = np.mean((results['KERAS'].squeeze() - data)**2)
+mse_keras2 = np.mean((results['HLS4ML'].squeeze() - data)**2)
+
+print(f"MSE salida 1 (Keras): {mse_keras1}")
+print(f"MSE salida 2 (HLS4ML): {mse_keras2}")
 #%%
 
 # %%
