@@ -65,7 +65,7 @@ for j in ('gn', 'ng'):
         delay_keras_mod3.append(delay)
 
 #%% Cargar predicciones hls4ml
-'''
+
 resultados_hls4ml_fastrtl = []
 resultados_hls4ml_new_struc = []
 resultados_hls4ml_mod3 = []
@@ -76,21 +76,21 @@ delay_hls4ml_mod3 = []
 
 for j in ('gn', 'ng'):
     for i in ('1', '2'):
-        data = np.load(os.path.join(path_resultados, f'hls4ml/resultados{i}_modelo_400_epochs_fast_rtl_{j}.npy'))
+        data = np.load(os.path.join(path_resultados, f'hls4ml/resultados{i}_fastrtl_{j}.npy'))
         resultados_hls4ml_fastrtl.append(data)
-        delay = np.load(os.path.join(path_resultados, f'hls4ml/tiempos_modelo_400_epochs_fast_rtl_{j}.npy'))
+        delay = np.zeros((1000, 232)) # La sim de HLS4ML no simula tiempos, se usa 0 para mantener uniformidad
         delay_hls4ml_fastrtl.append(delay)
 
-        data = np.load(os.path.join(path_resultados, f'hls4ml/resultados{i}_modelo_10000_epochs_new_structure_modification_{j}.npy'))
+        data = np.zeros((1000, 232)) # En hls4ml no funciona este modelo, se usa 0 para mantener uniformidad
         resultados_hls4ml_new_struc.append(data)
-        delay = np.load(os.path.join(path_resultados, f'hls4ml/tiempos_modelo_10000_epochs_new_structure_modification_{j}.npy'))
+        delay = np.zeros((1000, 232)) # La sim de HLS4ML no simula tiempos, se usa 0 para mantener uniformidad
         delay_hls4ml_new_struct.append(delay)
 
-        data = np.load(os.path.join(path_resultados, f'hls4ml/resultados{i}_modelo_400_epochs_mod3_{j}.npy'))
+        data = np.load(os.path.join(path_resultados, f'hls4ml/resultados{i}_mod3_{j}.npy'))
         resultados_hls4ml_mod3.append(data)
-        delay = np.load(os.path.join(path_resultados, f'hls4ml/tiempos_modelo_400_epochs_mod3_{j}.npy'))
+        delay = np.zeros((1000, 232)) # La sim de HLS4ML no simula tiempos, se usa 0 para mantener uniformidad
         delay_hls4ml_mod3.append(delay)
-'''
+
 #%% Mostrar una traza de cada modelo/plataforma/dataset y calcular MSE de todos
 
 import matplotlib.pyplot as plt
@@ -146,30 +146,30 @@ modelos = {
         'delay_ng': [delay_rsppi_fastrtl[1], delay_rsppi_mod3[1], delay_rsppi_new_struct[1]]
     },
 
-#    'hls4ml': {
-#        'out1_gn': {
-#            'FastRTL': resultados_hls4ml_fastrtl[0],
-#            'Mod3': resultados_hls4ml_mod3[0],
-#            'NewStruct': resultados_hls4ml_new_struc[0],
-#        },
-#        'out2_gn': {
-#            'FastRTL': resultados_hls4ml_fastrtl[1],
-#            'Mod3': resultados_hls4ml_mod3[1],
-#            'NewStruct': resultados_hls4ml_new_struc[1],
-#        },
-#        'out1_ng': {
-#            'FastRTL': resultados_hls4ml_fastrtl[2],
-#            'Mod3': resultados_hls4ml_mod3[2],
-#            'NewStruct': resultados_hls4ml_new_struc[2],
-#        },
-#        'out2_ng': {
-#            'FastRTL': resultados_hls4ml_fastrtl[3],
-#            'Mod3': resultados_hls4ml_mod3[3],
-#            'NewStruct': resultados_hls4ml_new_struc[3],
-#        },
-#        'delay_gn': [delay_hls4ml_fastrtl[0], delay_hls4ml_mod3[0], delay_hls4ml_new_struct[0]],
-#        'delay_ng': [delay_hls4ml_fastrtl[1], delay_hls4ml_mod3[1], delay_hls4ml_new_struct[1]]
-#    }
+    'hls4ml': {
+        'out1_gn': {
+            'FastRTL': resultados_hls4ml_fastrtl[0],
+            'Mod3': resultados_hls4ml_mod3[0],
+            'NewStruct': resultados_hls4ml_new_struc[0],
+        },
+        'out2_gn': {
+            'FastRTL': resultados_hls4ml_fastrtl[1],
+            'Mod3': resultados_hls4ml_mod3[1],
+            'NewStruct': resultados_hls4ml_new_struc[1],
+        },
+        'out1_ng': {
+            'FastRTL': resultados_hls4ml_fastrtl[2],
+            'Mod3': resultados_hls4ml_mod3[2],
+            'NewStruct': resultados_hls4ml_new_struc[2],
+        },
+        'out2_ng': {
+            'FastRTL': resultados_hls4ml_fastrtl[3],
+            'Mod3': resultados_hls4ml_mod3[3],
+            'NewStruct': resultados_hls4ml_new_struc[3],
+        },
+        'delay_gn': [delay_hls4ml_fastrtl[0], delay_hls4ml_mod3[0], delay_hls4ml_new_struct[0]],
+        'delay_ng': [delay_hls4ml_fastrtl[1], delay_hls4ml_mod3[1], delay_hls4ml_new_struct[1]]
+    }
     
 }
 
@@ -189,7 +189,7 @@ from scipy.stats import pearsonr
 datasets = ['gn', 'ng']
 salidas = ['out1', 'out2']
 nombres_modelos = ['FastRTL', 'Mod3', 'NewStruct']
-nombres_plataformas = ['Keras', 'RaspberryPi'] #recordar añadir 'hls4ml'
+nombres_plataformas = ['Keras', 'RaspberryPi', 'hls4ml'] #recordar añadir 'hls4ml'
 
 # Cargar valores reales para cada dataset y salida
 # Si tienes dos salidas reales distintas, reemplaza el segundo elemento por la columna correspondiente
@@ -225,10 +225,24 @@ for plataforma in nombres_plataformas:
                 nrmse = np.sqrt(mse) / (np.max(y) - np.min(y))
                 mae = mean_absolute_error(y, preds.squeeze())
                 r2 = r2_score(y, preds.squeeze())
-
+               
+                print(f'---------------------{plataforma}-{modelo}-{salida}-{dataset}-------------------')
                 print(f"MSE {plataforma}-{modelo}-{salida}-{dataset}: {mse}")
                 print(f"MAE {plataforma}-{modelo}-{salida}-{dataset}: {mae}")
                 print(f"MSE Normalizado {plataforma}-{modelo}-{salida}-{dataset}: {nrmse}")
                 print(f"r2 {plataforma}-{modelo}-{salida}-{dataset}: {r2}")
+                print("---------------------------------------------------------------------------------")
+
+for plataforma in nombres_plataformas:
+    for d, dataset in enumerate(datasets):
+        for delay_key in [f'delay_{dataset}']:
+            delays = modelos[plataforma][delay_key]
+            for i, modelo in enumerate(nombres_modelos):
+                delay_arr = delays[i]
+                mean_delay = np.mean(delay_arr)
+
+                print(f'---------------------{plataforma}-{modelo}-{salida}-{dataset}-------------------')
+                print(f"Media delay {plataforma} | {modelo} | {dataset}: {mean_delay}")
+                print("---------------------------------------------------------------------------------")
 
 # %%
