@@ -8,7 +8,7 @@ path_resultados = r"C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Resultados
 
 #%% Cargar valores reales
 data_gn = pd.read_pickle(os.path.join(path_dataset, "1000_eventos_g_n.pickle"))
-data_ng = pd.read_pickle(os.path.join(path_dataset, "1000_eventos_g_n.pickle"))
+data_ng = pd.read_pickle(os.path.join(path_dataset, "1000_eventos_n_g.pickle"))
 
 traza_real = {'gn': data_gn, 'ng': data_ng}
 
@@ -65,6 +65,7 @@ for j in ('gn', 'ng'):
         delay_keras_mod3.append(delay)
 
 #%% Cargar predicciones hls4ml
+'''
 resultados_hls4ml_fastrtl = []
 resultados_hls4ml_new_struc = []
 resultados_hls4ml_mod3 = []
@@ -89,39 +90,145 @@ for j in ('gn', 'ng'):
         resultados_hls4ml_mod3.append(data)
         delay = np.load(os.path.join(path_resultados, f'hls4ml/tiempos_modelo_400_epochs_mod3_{j}.npy'))
         delay_hls4ml_mod3.append(delay)
+'''
+#%% Mostrar una traza de cada modelo/plataforma/dataset y calcular MSE de todos
 
-#%%Plotear resultados
 import matplotlib.pyplot as plt
 
-# Selecciona el índice del evento a mostrar
-idx = 300
+# Definir modelos, plataformas y datasets
+modelos = {
+    'Keras': {
+        'out1_gn': {
+            'FastRTL': resultados_keras_fastrtl[0],
+            'Mod3': resultados_keras_mod3[0],
+            'NewStruct': resultados_keras_new_struc[0],
+        },
+        'out2_gn': {
+            'FastRTL': resultados_keras_fastrtl[1],
+            'Mod3': resultados_keras_mod3[1],
+            'NewStruct': resultados_keras_new_struc[1],
+        },
+        'out1_ng': {
+            'FastRTL': resultados_keras_fastrtl[2],
+            'Mod3': resultados_keras_mod3[2],
+            'NewStruct': resultados_keras_new_struc[2],
+        },
+        'out2_ng': {
+            'FastRTL': resultados_keras_fastrtl[3],
+            'Mod3': resultados_keras_mod3[3],
+            'NewStruct': resultados_keras_new_struc[3],
+        },
+        'delay_gn': [delay_keras_fastrtl[0], delay_keras_mod3[0], delay_keras_new_struct[0]],
+        'delay_ng': [delay_keras_fastrtl[1], delay_keras_mod3[1], delay_keras_new_struct[1]]
+    },
+    'RaspberryPi': {
+        'out1_gn': {
+            'FastRTL': resultados_rsppi_fastrtl[0],
+            'Mod3': resultados_rsppi_mod3[0],
+            'NewStruct': resultados_rsppi_new_struc[0],
+        },
+        'out2_gn': {
+            'FastRTL': resultados_rsppi_fastrtl[1],
+            'Mod3': resultados_rsppi_mod3[1],
+            'NewStruct': resultados_rsppi_new_struc[1],
+        },
+        'out1_ng': {
+            'FastRTL': resultados_rsppi_fastrtl[2],
+            'Mod3': resultados_rsppi_mod3[2],
+            'NewStruct': resultados_rsppi_new_struc[2],
+        },
+        'out2_ng': {
+            'FastRTL': resultados_rsppi_fastrtl[3],
+            'Mod3': resultados_rsppi_mod3[3],
+            'NewStruct': resultados_rsppi_new_struc[3],
+        },
+        'delay_gn': [delay_rsppi_fastrtl[0], delay_rsppi_mod3[0], delay_rsppi_new_struct[0]],
+        'delay_ng': [delay_rsppi_fastrtl[1], delay_rsppi_mod3[1], delay_rsppi_new_struct[1]]
+    },
 
-plt.figure(figsize=(12, 5))
+#    'hls4ml': {
+#        'out1_gn': {
+#            'FastRTL': resultados_hls4ml_fastrtl[0],
+#            'Mod3': resultados_hls4ml_mod3[0],
+#            'NewStruct': resultados_hls4ml_new_struc[0],
+#        },
+#        'out2_gn': {
+#            'FastRTL': resultados_hls4ml_fastrtl[1],
+#            'Mod3': resultados_hls4ml_mod3[1],
+#            'NewStruct': resultados_hls4ml_new_struc[1],
+#        },
+#        'out1_ng': {
+#            'FastRTL': resultados_hls4ml_fastrtl[2],
+#            'Mod3': resultados_hls4ml_mod3[2],
+#            'NewStruct': resultados_hls4ml_new_struc[2],
+#        },
+#        'out2_ng': {
+#            'FastRTL': resultados_hls4ml_fastrtl[3],
+#            'Mod3': resultados_hls4ml_mod3[3],
+#            'NewStruct': resultados_hls4ml_new_struc[3],
+#        },
+#        'delay_gn': [delay_hls4ml_fastrtl[0], delay_hls4ml_mod3[0], delay_hls4ml_new_struct[0]],
+#        'delay_ng': [delay_hls4ml_fastrtl[1], delay_hls4ml_mod3[1], delay_hls4ml_new_struct[1]]
+#    }
+    
+}
 
-plt.subplot(1, 2, 1)
-plt.plot(y_true1[idx], label='True Trace1')
-plt.plot(preds_keras_out1[idx].reshape(232,1), label='Predicted Trace1')
-plt.title('Salida 1')
-plt.legend()
+for plataforma in modelos:
+    for key in modelos[plataforma]:
+        # Saltar las claves de delay si existen
+        if 'delay' in key:
+            continue
+        for modelo in modelos[plataforma][key]:
+            arr = modelos[plataforma][key][modelo]
+            print(f"{plataforma} | {key} | {modelo} -> shape: {arr.shape}")
+#%%
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from scipy.stats import pearsonr
 
-plt.subplot(1, 2, 2)
-plt.plot(y_true2[idx], label='True Trace2')
-plt.plot(preds_keras_out2[idx].reshape(232,1), label='Predicted Trace2')
-plt.title('Salida 2')
-plt.legend()
+# Definición de datasets y salidas
+datasets = ['gn', 'ng']
+salidas = ['out1', 'out2']
+nombres_modelos = ['FastRTL', 'Mod3', 'NewStruct']
+nombres_plataformas = ['Keras', 'RaspberryPi'] #recordar añadir 'hls4ml'
 
-plt.tight_layout()
-plt.show()
+# Cargar valores reales para cada dataset y salida
+# Si tienes dos salidas reales distintas, reemplaza el segundo elemento por la columna correspondiente
+y_true = {
+    'out1_gn': traza_real['gn'].Trace1,
+    'out2_gn': traza_real['gn'].Trace2,
+    'out1_ng': traza_real['ng'].Trace1,
+    'out2_ng': traza_real['ng'].Trace2
+}
 
-#%% Calcular MSE para cada salida
-mse_keras1 = np.mean((preds_keras_out1.squeeze() - y_true1)**2)
-mse_keras2 = np.mean((preds_keras_out2.squeeze() - y_true2)**2)
+idx = 300  # Índice del evento a mostrar
 
-#%% Calcular media de tiempo de predicción
-mean_delay_keras = np.mean(dalay_keras)
+for plataforma in nombres_plataformas:
+    for d, dataset in enumerate(datasets):
+        for s, salida in enumerate(salidas):
+            key = f'{salida}_{dataset}'
+            for modelo in nombres_modelos:
+                preds = modelos[plataforma][key][modelo]
+                y = np.stack(y_true[key].values)
+                # Plot
+                '''
+                plt.figure(figsize=(8, 4))
+                plt.plot(y[idx], label=f'True {salida} ({dataset})')
+                plt.plot(preds[idx].reshape(-1), label=f'{plataforma}-{modelo} {salida} ({dataset})')
+                plt.title(f'{plataforma} - {modelo} - {salida} - {dataset}')
+                plt.legend()
+                plt.tight_layout()
+                plt.show()
+                '''
+                # Metricas:
 
-#%% Imprimir resultados
-print(f"MSE salida 1 (Keras): {mse_keras1}")
-print(f"MSE salida 2 (Keras): {mse_keras2}")
-print(f"Tiempo medio de predicción (Keras): {mean_delay_keras} s")
+                mse = mean_squared_error(y, preds.squeeze())
+                nrmse = np.sqrt(mse) / (np.max(y) - np.min(y))
+                mae = mean_absolute_error(y, preds.squeeze())
+                r2 = r2_score(y, preds.squeeze())
+
+                print(f"MSE {plataforma}-{modelo}-{salida}-{dataset}: {mse}")
+                print(f"MAE {plataforma}-{modelo}-{salida}-{dataset}: {mae}")
+                print(f"MSE Normalizado {plataforma}-{modelo}-{salida}-{dataset}: {nrmse}")
+                print(f"r2 {plataforma}-{modelo}-{salida}-{dataset}: {r2}")
+
 # %%

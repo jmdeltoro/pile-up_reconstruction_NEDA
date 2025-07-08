@@ -45,4 +45,9 @@ for k in ('modelo_400_epochs_fast_rtl', 'modelo_400_epochs_mod3', 'modelo_10000_
         np.save(os.path.join(path_resultados, f'resultados1_{k}_{j}.npy'), predicts_out1)
         np.save(os.path.join(path_resultados, f'resultados2_{k}_{j}.npy'), predicts_out2)
         np.save(os.path.join(path_resultados, f'tiempos_{k}_{j}.npy'), delay_time)
+
+        predicts_1 = []
+        predicts_2 = []
+
+        delay = []
 # %%
