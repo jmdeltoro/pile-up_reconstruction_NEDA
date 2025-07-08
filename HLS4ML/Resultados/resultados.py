@@ -22,7 +22,7 @@ delay_rsppi_new_struct = []
 delay_rsppi_mod3 = []
 
 for j in ('gn', 'ng'):
-    for i in ('1', '2'):
+    for i in ('2', '1'): #cambio en el orden debido a la forma en la que se guardan los datos en la RaspberryPi
         data = np.load(os.path.join(path_resultados, f'RaspberryPi/resultados{i}_fastrtl_{j}.npy'))
         resultados_rsppi_fastrtl.append(data)
         delay = np.load(os.path.join(path_resultados, f'RaspberryPi/tiempos_fastrtl_{j}.npy'))
@@ -209,16 +209,19 @@ for plataforma in nombres_plataformas:
             for modelo in nombres_modelos:
                 preds = modelos[plataforma][key][modelo]
                 y = np.stack(y_true[key].values)
+
                 # Plot
-                '''
                 plt.figure(figsize=(8, 4))
                 plt.plot(y[idx], label=f'True {salida} ({dataset})')
                 plt.plot(preds[idx].reshape(-1), label=f'{plataforma}-{modelo} {salida} ({dataset})')
                 plt.title(f'{plataforma} - {modelo} - {salida} - {dataset}')
                 plt.legend()
                 plt.tight_layout()
-                plt.show()
-                '''
+                
+                filename = f"{plataforma}_{modelo}_{salida}_{dataset}.png"
+                plt.savefig(os.path.join(r'C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Resultados\Graficas', filename))
+                plt.close()
+
                 # Metricas:
 
                 mse = mean_squared_error(y, preds.squeeze())
@@ -233,6 +236,7 @@ for plataforma in nombres_plataformas:
                 print(f"r2 {plataforma}-{modelo}-{salida}-{dataset}: {r2}")
                 print("---------------------------------------------------------------------------------")
 
+#%% Calculo media delays
 for plataforma in nombres_plataformas:
     for d, dataset in enumerate(datasets):
         for delay_key in [f'delay_{dataset}']:
@@ -245,4 +249,3 @@ for plataforma in nombres_plataformas:
                 print(f"Media delay {plataforma} | {modelo} | {dataset}: {mean_delay}")
                 print("---------------------------------------------------------------------------------")
 
-# %%
