@@ -4,11 +4,15 @@ import pandas as pd
 import numpy as np
 import os
 
+model_path = '/home/rmart/preddicciones/Modelos'
+predictions_path = '/home/rmart/preddicciones/hls4ml'
+dataset_path = '/home/rmart/preddicciones/Datasets'
+
 #%% Cargar el modelo guardado
-model = load_model(os.path.join('C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Modelos\modelo_10000_epochs_new_structure_modification', 'model.h5'))
+model = load_model(os.path.join(model_path, 'modelo_400_epochs_fast_rtl', 'model.h5'))
 
 from tensorflow.keras.models import Model
-modelo1out = Model(inputs=model.input, outputs=model.output[0])
+modelo1out = Model(inputs=model.input, outputs=model.output[1])
 
 config = hls4ml.utils.config_from_keras_model(modelo1out, granularity='name', default_precision='fixed<16,6>')
 
@@ -33,12 +37,8 @@ hls_model = hls4ml.converters.convert_from_keras_model(modelo1out,
 
 hls_model.compile()
 
-# Cargar el dataset en formato pickle
-data_path = "pile-up_reconstruction_NEDA/HLS4ML/Datasets/dataset_test_200eventos_g-n.pkl"
-data = pd.read_pickle(data_path)
+data = pd.read_pickle(os.path.join(dataset_path, '1000_eventos_n_g.pickle'))
 
-# Extraer una traza (por ejemplo, la columna 'TraceFinal' de la primera fila)
-# Ajusta el nombre de la columna y el índice según tus necesidades
 all_preds = []
 for idx, trace in enumerate(data.TraceFinal):
     X_test = np.array([trace])
@@ -46,4 +46,4 @@ for idx, trace in enumerate(data.TraceFinal):
     all_preds.append(y_hls)
 
 all_preds = np.array(all_preds)
-np.save('pile-up_reconstruction_NEDA/HLS4ML/Resultados/hls4ml/predicciones_hls4mlout1_n-g.npy', all_preds)
+np.save(os.path.join(predictions_path, 'resultados2_fastrtl_ng.npy'), all_preds)
