@@ -199,9 +199,15 @@ y_true = {
     'out1_ng': traza_real['ng'].Trace1,
     'out2_ng': traza_real['ng'].Trace2
 }
-
+#%%
 idx = 300  # Índice del evento a mostrar
+pile_up = np.stack(traza_real['gn'].TraceFinal[idx])
 
+plt.plot(pile_up, label=f'Pile-Up evento nº: {idx}')
+filename = f"Pile-up_evento_n_{idx}.png"
+plt.savefig(os.path.join(r'C:\Users\rmart\pile-up_reconstruction_NEDA\HLS4ML\Resultados\Graficas', filename))
+plt.close()
+#%%
 for plataforma in nombres_plataformas:
     for d, dataset in enumerate(datasets):
         for s, salida in enumerate(salidas):
@@ -209,6 +215,7 @@ for plataforma in nombres_plataformas:
             for modelo in nombres_modelos:
                 preds = modelos[plataforma][key][modelo]
                 y = np.stack(y_true[key].values)
+                pile_up = np.stack(traza_real['gn'].TraceFinal.values)
 
                 # Plot
                 plt.figure(figsize=(8, 4))
