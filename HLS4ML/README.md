@@ -5,7 +5,7 @@
 - En los archivos que se generan, busco la carpeta myproject_prj, ahi, solution1/impl/ip/ xilinx_com_hls_myproject.zip
 - Dentro de este .zip está la IP
 
-  - A partir de este momento habrimos Vivado 2019.2 y seguimos las instrucciones del video.
+  - A partir de este momento abrimos Vivado 2019.2 y seguimos las instrucciones del video.
 
 
   - OJO problema con Vivado 2019.2
